@@ -3,16 +3,65 @@
 function gameBoard() {
   const rows = 3;
   const columns = 3;
-  const board = [];
+  const newBoard = [];
 
   for (let i = 0; i < rows; i++) {
-    board[i] = [];
+    newBoard[i] = [];
     for (let j = 0; j < columns; j++) {
-      board[i].push("");
+      newBoard[i].push('');
     }
   }
-  console.log(board);
-  return board;
+  console.log(newBoard);
+  return [newBoard, columns];
 }
 
-gameBoard();
+// Destructuring return values into variables
+
+let [board, numCols] = gameBoard();
+
+// Handle player switch
+
+let currentPlayer = 'X';
+
+function switchPlayer() {
+  currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+  console.log(currentPlayer);
+}
+
+// Checks if there is any cell available
+
+function checkBoard(arr) {
+  const full = (el) => el !== '';
+  return arr.every((row) => row.every(full));
+}
+
+checkBoard(board);
+
+// Get user input cell
+
+function getUserInput() {
+  return prompt('Select a cell from 1 to 9');
+}
+
+// Transforms user input into 2D array coordinates
+
+function getCellCoordinates(input, cols) {
+  const index = input - 1;
+  const row = Math.floor(index / cols);
+  const col = index % numCols;
+  return [row, col];
+}
+
+function playerMovement(cols, input) {
+  let [row, col] = getCellCoordinates(input, cols);
+  if (board[row][col] === '') {
+    board[row][col] = currentPlayer;
+  }
+  console.log(board);
+  switchPlayer();
+  return currentPlayer;
+}
+
+while (checkBoard(board) === false) {
+  playerMovement(numCols, getUserInput());
+}
