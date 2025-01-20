@@ -52,6 +52,8 @@ function getCellCoordinates(input, cols) {
   return [row, col];
 }
 
+// Displays player movement
+
 function playerMovement(cols, input) {
   let [row, col] = getCellCoordinates(input, cols);
   if (board[row][col] === '') {
@@ -62,6 +64,5 @@ function playerMovement(cols, input) {
   return currentPlayer;
 }
 
-while (checkBoard(board) === false) {
-  playerMovement(numCols, getUserInput());
-}
+/* DEJA DE USAR CHATGPT PARA QUE TE HAGA EL CÓDIGO PORQUE CON LO DE CHEQUEAR WIN NO HA SALIDO BIEN
+RÓMPETE LOS CUERNOS TÚ SOLO Y PÍDELE PEQUEÑAS AYUDAS O VAS A PERDER EL TIEMPO */ 
