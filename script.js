@@ -64,5 +64,39 @@ function playerMovement(cols, input) {
   return currentPlayer;
 }
 
-/* DEJA DE USAR CHATGPT PARA QUE TE HAGA EL CÓDIGO PORQUE CON LO DE CHEQUEAR WIN NO HA SALIDO BIEN
-RÓMPETE LOS CUERNOS TÚ SOLO Y PÍDELE PEQUEÑAS AYUDAS O VAS A PERDER EL TIEMPO */ 
+// Checks winner
+
+function checkHorizontal(board) {
+  for (let i = 0; i < 3; i++) {
+    let ref = board[i][0];
+    if (board[i][1] == ref && board[i][2] == ref) {
+      console.log(board[i]);
+      console.log("Winner");
+      return;
+    }
+  }
+}
+
+function checkVertical(board) {
+  for (let i = 0; i < 3; i++) {
+    let ref = board[0][i];
+    if (board[1][i] == ref && board[2][i] == ref) {
+      console.log(board[0][i],board[1][i],board[2][i]);
+      console.log("Winner");
+      return;
+    }
+  }
+}
+
+function checkDiagonal(board) {
+  let ref1 = board[0][0];
+  let ref2 = board[0][2];
+  if (board[1][1] == ref1 && board[2][2] == ref1) {
+    console.log("Winner ref1");
+    return;
+  }
+  if (board[1][1] == ref2 && board[2][0] == ref2) {
+    console.log("Winner ref2");
+    return;
+  }
+}
