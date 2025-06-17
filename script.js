@@ -1,3 +1,22 @@
+function gameController() {
+  const board = gameBoard().newBoard();
+  const players = [playerCreator('PerroComepingas', 'X'), playerCreator('SrEsqueletinho', 'O')];
+  let currentPlayerIndex = 0;
+
+  function getCurrentPlayer() {
+    return players[currentPlayerIndex];
+  }
+
+  function switchPlayer() {
+    currentPlayerIndex = 1 - currentPlayerIndex;
+  }
+
+  return { board, players, getCurrentPlayer, switchPlayer };
+}
+
+const game = gameController();
+console.log(game);
+
 function gameBoard() {
   const rows = 3;
   const columns = 3;
@@ -27,29 +46,3 @@ function playerCreator(name, token) {
 
   return { name, token, sumWins, getWins };
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const player1 = playerCreator('PerroComepingas', 'X');
-// const player2 = playerCreator('SrEsqueletinho', 'O');
-
-// console.log(`Player: ${player1.name} Token: ${player1.token} Wins: ${player1.getWins()}`);
-// console.log(`Player: ${player2.name} Token: ${player2.token} Wins: ${player2.getWins()}`);
-
-// const testing = gameBoard();
-// const testBoard = testing.newBoard();
-// testBoard[0][0] = "X";
-// console.log(testBoard);
