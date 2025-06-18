@@ -11,19 +11,23 @@ function gameController() {
     currentPlayerIndex = 1 - currentPlayerIndex;
   }
 
-  function handleTurn(cell) {
-    const { row, column } = playerMovement(game, cell);
-    if (row === undefined || column === undefined) {
-      return;
-    }
-    if (checkWinner(game, row, column)) {
-      //Show win victory
-    } else {
-      //Resume game
-    }
+  function findCell(cell) {
+    const cellsMap = {
+      1: [0, 0],
+      2: [0, 1],
+      3: [0, 2],
+      4: [1, 0],
+      5: [1, 1],
+      6: [1, 2],
+      7: [2, 0],
+      8: [2, 1],
+      9: [2, 2],
+    };
+    const coords = cellsMap[cell];
+    return coords;
   }
 
-  return { board, players, getCurrentPlayer, switchPlayer, handleTurn };
+  return { board, players, getCurrentPlayer, switchPlayer, findCell };
 }
 
 function gameBoard() {
@@ -58,7 +62,7 @@ function playerCreator(name, token) {
 
 function playerMovement(game, cell) {
   const currentPlayer = game.getCurrentPlayer();
-  const selectedCell = findCell(cell);
+  const selectedCell = game.findCell(cell);
   let lastColumn = 0;
   let lastRow = 0;
   if (game.board[selectedCell[0]][selectedCell[1]] !== ' ') {
@@ -70,37 +74,11 @@ function playerMovement(game, cell) {
     lastRow = selectedCell[1];
     game.switchPlayer();
   }
-  return { column: lastColumn, row: lastRow };
+  return { row: lastRow, column: lastColumn };
 }
-
-function findCell(cell) {
-  const cellsMap = {
-    1: [0, 0],
-    2: [0, 1],
-    3: [0, 2],
-    4: [1, 0],
-    5: [1, 1],
-    6: [1, 2],
-    7: [2, 0],
-    8: [2, 1],
-    9: [2, 2],
-  };
-  const coords = cellsMap[cell];
-  return coords;
-}
-
-function checkWinner(game, row, column) {}
 
 const game = gameController();
 
 playerMovement(game, 1);
-playerMovement(game, 2);
-playerMovement(game, 3);
-playerMovement(game, 4);
-playerMovement(game, 5);
-playerMovement(game, 6);
-playerMovement(game, 7);
-playerMovement(game, 8);
-playerMovement(game, 9);
 
 console.log(game.board);
