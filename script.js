@@ -1,14 +1,27 @@
 function gameController() {
-  const board = gameBoard().newBoard();
-  const players = [playerCreator('PerroComepingas', 'X'), playerCreator('SrEsqueletinho', 'O')];
-  let currentPlayerIndex = 0;
+  const board = gameBoard();
+  const players = playerController();
 
-  function getCurrentPlayer() {
-    return players[currentPlayerIndex];
+  function gameBoard() {
+    const rows = 3;
+    const columns = 3;
+    const board = [];
+    for (let i = 0; i < rows; i++) {
+      board[i] = [];
+      for (let j = 0; j < columns; j++) {
+        board[i][j] = ' ';
+      }
+    }
+    return board;
   }
 
-  function switchPlayer() {
-    currentPlayerIndex = 1 - currentPlayerIndex;
+  function newGame() {
+    for (let i = 0; i < board.length; i++) {
+      for (let j = 0; j < board[i].length; j++) {
+        board[i][j] = ' ';
+      }
+    }
+    players.reset();
   }
 
   function findCell(cell) {
@@ -27,58 +40,106 @@ function gameController() {
     return coords;
   }
 
-  return { board, players, getCurrentPlayer, switchPlayer, findCell };
-}
-
-function gameBoard() {
-  const rows = 3;
-  const columns = 3;
-  const board = [];
-  for (let i = 0; i < rows; i++) {
-    board[i] = [];
-    for (let j = 0; j < columns; j++) {
-      board[i][j] = ' ';
+  function playerMovement(cell) {
+    const selectedCell = findCell(cell);
+    const row = selectedCell[0];
+    const column = selectedCell[1];
+    //checkWinner(see)
+    // if else checkWinner
+    const currentPlayer = players.getCurrentPlayer();
+    if (board[row][column] !== ' ') {
+      console.log('Cell unavailable');
+      return;
+    } else {
+      board[row][column] = currentPlayer.token;
+      players.switchPlayer();
     }
   }
-  function newBoard() {
-    return board.map((row) => row.slice());
+
+  function checkWinner(cell) {
+    const selectedCell = findCell(cell);
+    const row = selectedCell[0];
+    const column = selectedCell[1];
+    const checkToken = board[row][column];
+    const isSameToken = (token) => token === checkToken;
+    const N = board.length;
+
+    // Horizontal
+    const checkHorizontal = board[row].every(isSameToken);
+
+    // Vertical
+    const columnValues = [];
+    for (let i = 0; i < N; i++) {
+      columnValues.push(board[i][column]);
+    }
+    const checkVertical = columnValues.every(isSameToken);
+
+    // Main diagonal
+    let checkMainDiag = false;
+    if (row === column) {
+      const mainDiagHolder = [];
+      for (let i = 0; i < N; i++) {
+        mainDiagHolder.push(board[i][i]);
+      }
+      checkMainDiag = mainDiagHolder.every(isSameToken);
+    }
+
+    // Secondary diagonal
+    let checkSecoDiag = false;
+    if (row + column === N - 1) {
+      const secoDiagHolder = [];
+      for (let i = 0; i < N; i++) {
+        secoDiagHolder.push(board[i][N - 1 - i]);
+      }
+      checkSecoDiag = secoDiagHolder.every(isSameToken);
+    }
+
+    if (checkHorizontal || checkVertical || checkMainDiag || checkSecoDiag) {
+      console.log('You Win!');
+      return true;
+    } else {
+      return false;
+    }
   }
-  return { newBoard };
+  return { board, newGame, findCell, playerMovement, checkWinner };
 }
 
-function playerCreator(name, token) {
-  let wins = 0;
+function playerController() {
+  const playersHolder = [playerCreator('PerroComepingas', 'X'), playerCreator('SrEsqueletinho', 'O')];
+  let currentPlayerIndex = 0;
 
-  function sumWins() {
-    wins++;
+  function playerCreator(name, token) {
+    let wins = 0;
+
+    function sumWins() {
+      wins++;
+    }
+
+    function getWins() {
+      console.log(wins);
+      return wins;
+    }
+
+    function resetWins() {
+      wins = 0;
+    }
+    return { name, token, sumWins, getWins, resetWins };
   }
 
-  function getWins() {
-    return wins;
+  function getCurrentPlayer() {
+    return playersHolder[currentPlayerIndex];
   }
 
-  return { name, token, sumWins, getWins };
-}
-
-function playerMovement(game, cell) {
-  const currentPlayer = game.getCurrentPlayer();
-  const selectedCell = game.findCell(cell);
-  let lastColumn = 0;
-  let lastRow = 0;
-  if (game.board[selectedCell[0]][selectedCell[1]] !== ' ') {
-    console.log('Occupied cell');
-    return;
-  } else {
-    game.board[selectedCell[0]][selectedCell[1]] = currentPlayer.token;
-    lastColumn = selectedCell[0];
-    lastRow = selectedCell[1];
-    game.switchPlayer();
+  function switchPlayer() {
+    currentPlayerIndex = 1 - currentPlayerIndex;
   }
-  return { row: lastRow, column: lastColumn };
+
+  function reset() {
+    currentPlayerIndex = 0;
+    playersHolder.forEach((player) => player.resetWins());
+  }
+
+  return { playersHolder, playerCreator, getCurrentPlayer, switchPlayer, reset };
 }
 
 const game = gameController();
-
-playerMovement(game, 1);
-
-console.log(game.board);
